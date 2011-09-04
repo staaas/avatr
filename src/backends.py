@@ -15,7 +15,7 @@ from log import enable_logging
 @enable_logging
 def twitter(uid):
     ' Twitter backend '
-    twi_data = urllib2.urlopen('http://api.twitter.com/1/users/show.json?user_id=' % uid).read()
+    twi_data = urllib2.urlopen('http://api.twitter.com/1/users/show.json?user_id=%s' % uid).read()
     avatar = json.loads(twi_data).get('profile_image_url', None)
     return avatar
 
