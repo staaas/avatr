@@ -16,9 +16,10 @@ def _validate_key(key):
     Checking for the key which is valid for two hours.
 
     The key must be generated with
-    sha1(config.ACCESS_CONTROL_KEY + datetime.now().strftime(_KEY_TIMESTAMP_FORMAT)).hexdigest()
+    sha1(config.ACCESS_CONTROL_KEY +\
+    datetime.utcnow().strftime(_KEY_TIMESTAMP_FORMAT)).hexdigest()
     '''
-    now = datetime.now()
+    now = datetime.utcnow()
     key_candidate = sha1(config.ACCESS_CONTROL_KEY + \
                           now.strftime(_KEY_TIMESTAMP_FORMAT)).hexdigest()
     if key == key_candidate:
