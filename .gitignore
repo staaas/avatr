@@ -1,0 +1,6 @@
+*.pyc
+*#
+*~
+src/config_local.py
+src/.ropeproject*
+.hg
