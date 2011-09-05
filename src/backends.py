@@ -29,11 +29,13 @@ vkontakte_semaphore = Semaphore(1)
 def vkontakte(uid):
     ' Vkontakte backend '
     vkontakte_semaphore.acquire()
-    vk_data = urllib2.urlopen('https://api.vkontakte.ru/method/getProfiles?uids=%s&fields=photo' % uid).read()
-    avatar = json.loads(vk_data).get('response', [{}])[0]['photo']
-    gevent.sleep(0.34)  # we shouldn't make more than 3 requests per second!
-    vkontakte_semaphore.release()
-    return avatar
+    try:
+        vk_data = urllib2.urlopen('https://api.vkontakte.ru/method/getProfiles?uids=%s&fields=photo' % uid).read()
+        avatar = json.loads(vk_data).get('response', [{}])[0]['photo']
+        gevent.sleep(0.34)  # we shouldn't make more than 3 requests per second!
+        return avatar
+    finally:
+        vkontakte_semaphore.release()
 
 @enable_logging
 def facebook(uid):
