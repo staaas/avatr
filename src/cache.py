@@ -33,7 +33,7 @@ def _set_avatar(provider, uid, avatar):
     ' Setting avatar in cache '
     if avatar:
         key = _get_key(provider, uid)
-        _client.set(key, 123, _get_timeout())
+        _client.set(key, avatar, _get_timeout())
     return avatar
 
 def enable_cache(provider):
