@@ -30,4 +30,5 @@ class avatar:
 
 if __name__ == "__main__":
     application = web.application(urls, globals()).wsgifunc()
-    WSGIServer(('127.0.0.1', 8088), application).serve_forever()
+    WSGIServer((config.SERVER_HOST, config.SERVER_PORT),
+               application).serve_forever()

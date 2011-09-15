@@ -5,6 +5,9 @@ import os.path
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
+SERVER_HOST = '127.0.0.1'
+SERVER_PORT = 8088
+
 ENABLE_ACCESS_CONTROL = True
 ACCESS_CONTROL_KEY = 'will be used like salt'
 
