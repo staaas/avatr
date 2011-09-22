@@ -1,4 +1,4 @@
 Cython==0.15
 gevent==0.13.6
-web.py==0.36
+Werkzeug==0.7.1
 gevent-memcache==0.0.1

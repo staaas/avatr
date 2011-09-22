@@ -5,13 +5,11 @@ from hashlib import sha1
 from datetime import datetime, timedelta
 from functools import wraps
 
-import web
-
 import config
 
 _KEY_TIMESTAMP_FORMAT = '%Y%m%d%H'
 
-def _validate_key(key):
+def validate_key(key):
     '''
     Checking for the key which is valid for two hours.
 
@@ -33,16 +31,3 @@ def _validate_key(key):
         return True
 
     return False
-
-
-def enable_access_control(func):
-    @wraps(func)
-    def decorated_func(*args, **kwargs):
-        '''
-        Checks whether the request with the given key should be processed.
-        '''
-        if config.ENABLE_ACCESS_CONTROL:
-            if not _validate_key(web.input(key='').key):
-                return web.forbidden()
-        return func(*args, **kwargs)
-    return decorated_func

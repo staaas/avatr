@@ -5,30 +5,24 @@ Avatarizaor web.py application powered by gevent
 from gevent import monkey; monkey.patch_all()
 
 from gevent.pywsgi import WSGIServer
-import web
+from werkzeug.utils import redirect
 
 import backends
 import config
-from permissions import enable_access_control
-
-urls = ('/(\w+)/(\d+)', 'avatar')
+import wsgi
 
 provider_mapping = {'twitter':  backends.twitter,
                     'vkontakte': backends.vkontakte,
                     'facebook': backends.facebook,}
 
-class avatar:
-    # Since gevent's WSGIServer executes each incoming connection in a separate greenlet
-    # long running requests such as this one don't block one another;
-    # and thanks to "monkey.patch_all()" statement at the top, thread-local storage used by web.ctx
-    # becomes greenlet-local storage thus making requests isolated as they should be.
-    @enable_access_control
-    def GET(self, provider, uid):
-        avatar_url = provider_mapping.get(provider, lambda uid: None)(uid)
-        return web.tempredirect(avatar_url or config.DEFAULT_AVATAR_URL)
+class Avatr(wsgi.KeyProtectedApp):
+    routing = {'/<backend>/<int:uid>': 'avatar'}
 
+    def avatar(self, request, backend, uid):
+        avatar_url = provider_mapping.get(backend, lambda uid: None)(uid)
+        return redirect(avatar_url or config.DEFAULT_AVATAR_URL)
 
 if __name__ == "__main__":
-    application = web.application(urls, globals()).wsgifunc()
+    application = Avatr()
     WSGIServer((config.SERVER_HOST, config.SERVER_PORT),
                application).serve_forever()
