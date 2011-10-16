@@ -4,16 +4,17 @@ Avatar caching tools.
 import random
 from functools import wraps
 
-from geventmemcache.client import Memcache
+import redis
 
 import config
 
-
-_client = Memcache(config.MEMCACHE_SERVERS)
+_redis_client = redis.Redis(host=config.CACHE_REDIS_HOST,
+                            port=config.CACHE_REDIS_PORT,
+                            db=config.CACHE_REDIS_DB)
 
 def _get_key(provider, uid):
     ' Returns memcache key for the given provider and url '
-    return '%s%s_%s' % (config.MEMCACHE_PREFIX, provider, uid)
+    return '%s%s_%s' % (config.CACHE_PREFIX, provider, uid)
 
 def _get_timeout():
     '''
@@ -21,19 +22,20 @@ def _get_timeout():
     If we have several cache items added during a short period of time, these
     items will be expired not at the same time.'
     '''
-    return random.randint(config.MEMCACHE_TIMEOUT_MEAN - config.MEMCACHE_TIMEOUT_DELTA,
-                          config.MEMCACHE_TIMEOUT_MEAN + config.MEMCACHE_TIMEOUT_DELTA)
+    return random.randint(config.CACHE_TIMEOUT_MEAN - config.CACHE_TIMEOUT_DELTA,
+                          config.CACHE_TIMEOUT_MEAN + config.CACHE_TIMEOUT_DELTA)
     
 def _get_avatar(provider, uid):
     ' Getting avatar url from cache '
     key = _get_key(provider, uid)
-    return _client.get(key)
+    return _redis_client.get(key)
 
 def _set_avatar(provider, uid, avatar):
     ' Setting avatar in cache '
     if avatar:
         key = _get_key(provider, uid)
-        _client.set(key, avatar, _get_timeout())
+        _redis_client.set(key, avatar)
+        _redis_client.expire(key, _get_timeout())
     return avatar
 
 def enable_cache(provider):

@@ -1,4 +1,4 @@
-Cython==0.15
-gevent==0.13.6
 Werkzeug==0.7.1
-gevent-memcache==0.0.1
+gevent==0.13.6
+nose==1.1.2
+redis==2.4.9
