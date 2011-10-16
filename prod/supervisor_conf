@@ -1,0 +1,13 @@
+[program:avatr]
+command=/home/projects/avatr/app/bin/python /home/projects/avatr/app/src/app.py
+user=avatr
+group=avatr
+environment=PYTHON_EGG_CACHE=/usr/local/share/python-eggs
+autostart=true
+autorestart=true
+daemon = False
+debug = False
+redirect_stderr=True
+stdout_logfile = /home/projects/avatr/logs/supervisor.log
+stderr_logfile = /home/projects/avatr/logs/supervisor_err.log
+loglevel = "info"
